@@ -1,0 +1,43 @@
+name: Deploy to AWS Lambda
+
+ on:
+   push:
+     branches:
+       - main
+
+ jobs:
+   deploy:
+     runs-on: ubuntu-latest
+
+     steps:
+     - name: Checkout code
+       uses: actions/checkout@v2.7.0
+
+     - name: Set up Python
+       uses: actions/setup-python@v3.1.3
+       with:
+         python-version: 3.9
+
+     - name: Install dependencies
+       run: |
+         python -m pip install --upgrade pip
+         pip install -r requirements.txt
+
+     - name: Package Lambda function
+       run: |
+         mkdir package
+         cp main.py package/
+         pip install --target package/ -r requirements.txt
+         cd package
+         zip -r ../main.zip .
+
+     - name: Configure AWS credentials
+       uses: aws-actions/configure-aws-credentials@v1
+       with:
+         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+         aws-region: us-east-1
+
+     - name: Deploy to AWS Lambda
+       run: |
+         aws lambda update-function-code --function-name gpt-bot --zip-file fileb://main.zip

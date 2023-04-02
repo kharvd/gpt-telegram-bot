@@ -92,7 +92,7 @@ async def chat_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def clear_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["messages"] = []
-    await update.message.reply_text("Chat cleared.")
+    await update.message.reply_text("🗑️ Chat cleared.")
 
 
 async def rerun_command(update: Update, context: ContextTypes.DEFAULT_TYPE):

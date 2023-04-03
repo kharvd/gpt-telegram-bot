@@ -6,14 +6,14 @@ A Telegram bot for ChatGPT.
 
 This bot can either run locally (with polling) or on AWS Lambda with DynamoDB for persistence (as a webhook).
 
-# Local
+### Local
 
 ```bash
 $ pip install -r requirements.txt
 $ TELEGRAM_API_TOKEN=your_bot_token python main.py
 ```
 
-# AWS Lambda
+### AWS Lambda
 
 The bot uses a DynamoDB table to store the chat history. Make sure the table exists and its name is set in an environment variable called `DYNAMODB_TABLE`.
 

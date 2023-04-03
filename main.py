@@ -193,14 +193,14 @@ def init_application(persistence: Optional[BasePersistence] = None) -> Applicati
 
 
 class DynamoDBPersistence(BasePersistence):
-    def __init__(self):
+    def __init__(self, table_name):
         super().__init__(
             PersistenceInput(
                 bot_data=False, chat_data=False, user_data=True, callback_data=False
             )
         )
         dynamodb = boto3.resource("dynamodb")
-        self.table = dynamodb.Table("gptcli")
+        self.table = dynamodb.Table(table_name)
 
     async def update_user_data(self, user_id: int, data) -> None:
         logging.info(f"update_user_data: {user_id}, {data}")
@@ -276,7 +276,9 @@ async def handler(event, context):
         logging.error("Invalid security token")
         return {"statusCode": 401}
 
-    application = init_application(DynamoDBPersistence())
+    application = init_application(
+        DynamoDBPersistence(os.environ.get("DYNAMODB_TABLE"))
+    )
     await application.initialize()
     await application.post_init(application)
 

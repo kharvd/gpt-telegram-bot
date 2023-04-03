@@ -267,12 +267,12 @@ class DynamoDBPersistence(BasePersistence):
 async def handler(event, context):
     logging.info(f"event: {event}")
     telegram_security_token = event.get("headers", {}).get(
-        "X-Telegram-Bot-Api-Secret-Token"
+        "x-telegram-bot-api-secret-token"
     )
     expected_token = os.environ.get("TELEGRAM_BOT_API_SECRET_TOKEN")
     if expected_token is None:
         logging.error("TELEGRAM_BOT_API_SECRET_TOKEN not set")
-        return {"statusCode": 500, "body": "TELEGRAM_BOT_API_SECRET_TOKEN not set"}
+        return {"statusCode": 500}
 
     if telegram_security_token != expected_token:
         logging.error("Invalid security token")

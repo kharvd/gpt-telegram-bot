@@ -64,7 +64,7 @@ async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE, messages, 
 
     async for completion in completion_iter:
         message_buffer += completion
-        if len(message_buffer) > 20:
+        if len(message_buffer) > 30:
             await maybe_edit()
 
     await maybe_edit()
@@ -127,9 +127,7 @@ async def model_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await set_override("model", update, context)
 
 
-async def temperature_command(
-    update: Update, context: ContextTypes.DEFAULT_TYPE
-) -> int:
+async def temperature_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await set_override("temperature", update, context)
 
 

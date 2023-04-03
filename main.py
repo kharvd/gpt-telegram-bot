@@ -288,8 +288,7 @@ async def handler(event, context):
 
 
 def lambda_handler(event, context):
-    asyncio.run(handler(event, context))
-    return {"statusCode": 200}
+    return asyncio.run(handler(event, context))
 
 
 def main():

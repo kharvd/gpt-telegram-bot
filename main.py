@@ -265,6 +265,7 @@ class DynamoDBPersistence(BasePersistence):
 
 
 async def handler(event, context):
+    logging.info(f"event: {event}")
     telegram_security_token = event.get("headers", {}).get(
         "X-Telegram-Bot-Api-Secret-Token"
     )

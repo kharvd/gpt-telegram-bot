@@ -271,9 +271,11 @@ async def handler(event, context):
     )
     expected_token = os.environ.get("TELEGRAM_BOT_API_SECRET_TOKEN")
     if expected_token is None:
+        logging.error("TELEGRAM_BOT_API_SECRET_TOKEN not set")
         return {"statusCode": 500, "body": "TELEGRAM_BOT_API_SECRET_TOKEN not set"}
 
     if telegram_security_token != expected_token:
+        logging.error("Invalid security token")
         return {"statusCode": 401}
 
     application = init_application(DynamoDBPersistence())

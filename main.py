@@ -71,7 +71,6 @@ async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE, messages, 
         stripped_message = message.strip()
         if stripped_message != "" and stripped_message != prev_message:
             await with_retries(lambda: response.edit_text(stripped_message))
-            await asyncio.sleep(0.1)
 
     try:
         async for completion in completion_iter:

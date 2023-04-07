@@ -37,6 +37,16 @@ async def complete_chat(messages, config):
             yield next_choice["delta"]["content"]
 
 
+async def with_retries(func, retries=3):
+    for i in range(retries):
+        try:
+            return await func()
+        except Exception as e:
+            logger.warning(f"Error: {e}")
+            await asyncio.sleep(2**i)
+    return await func()
+
+
 async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE, messages, config):
     if "openai_api_key" in context.user_data:
         openai.api_key = context.user_data["openai_api_key"]
@@ -60,14 +70,18 @@ async def respond(update: Update, context: ContextTypes.DEFAULT_TYPE, messages, 
 
         stripped_message = message.strip()
         if stripped_message != "" and stripped_message != prev_message:
-            await response.edit_text(stripped_message)
+            await with_retries(lambda: response.edit_text(stripped_message))
+            await asyncio.sleep(0.1)
 
-    async for completion in completion_iter:
-        message_buffer += completion
-        if len(message_buffer) > 30:
-            await maybe_edit()
-
-    await maybe_edit()
+    try:
+        async for completion in completion_iter:
+            message_buffer += completion
+            if len(message_buffer) > 30:
+                await maybe_edit()
+    except openai.OpenAIError as e:
+        await update.message.reply_text(f"OpenAI API error: {e}")
+    finally:
+        await maybe_edit()
 
     return message
 
